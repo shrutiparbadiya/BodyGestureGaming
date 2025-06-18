@@ -11,6 +11,7 @@ cap = cv2.VideoCapture(1)
 threshold = 0.1
 prev_y = None
 prev_x = None
+prev_bend_y = None
 with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
     while True:
         ret, frame = cap.read()
@@ -37,9 +38,12 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
             # Get normalized y of left shoulder
             left_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
             nose = results.pose_landmarks.landmark[mp_pose.PoseLandmark.NOSE]
+            left_hip = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_HIP]
+            left_knee = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_KNEE]
 
             current_y = nose.y
             current_x = left_shoulder.x
+            current_bend_y = left_hip.y
 
             # Detect vertical movement
             if prev_y is not None:
@@ -51,12 +55,20 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
                     print("Jump detected - shoulder moved up rapidly")
                     pyautogui.press('up')
-                elif change < -threshold:
+
+            prev_y = current_y
+
+            if prev_bend_y is not None:
+
+                change = prev_bend_y - current_bend_y
+
+                if change < -threshold:
                     cv2.putText(image, "Bend Detected!", (50, 50),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 3)
                     print("Bend detected - shoulder moved down rapidly")
                     pyautogui.press('down')
-            prev_y = current_y
+
+            prev_bend_y = current_bend_y
 
             # Detect horizontal movement
             if prev_x is not None:
@@ -95,9 +107,9 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
 
 
         # Render detections
-        # mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-        #                           mp_drawing.DrawingSpec(color=(245, 117, 66),thickness=2, circle_radius=2),
-        #                           mp_drawing.DrawingSpec(color=(245, 66, 20),thickness=2, circle_radius=2),)
+        mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                  mp_drawing.DrawingSpec(color=(245, 117, 66),thickness=2, circle_radius=2),
+                                  mp_drawing.DrawingSpec(color=(245, 66, 20),thickness=2, circle_radius=2),)
         # print(mp_pose.POSE_CONNECTIONS)
 
         # print(results)
