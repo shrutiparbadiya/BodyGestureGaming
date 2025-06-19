@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Play Game with Camera</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    img {
+      border: 5px solid #00c9ff;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Pose Detection Game</h1>
+  <img src="{{ url_for('video_feed') }}" width="640" height="480">
+  <a href="https://poki.com/en/g/temple-run-2" target="_blank" style="
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #00c9ff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  margin-top: 20px;
+">Let's play</a>
+  <footer>Poki cannot be embeded in iframe.</footer>
+</body>
+</html>
